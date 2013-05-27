@@ -24,8 +24,9 @@ setup(
 	],
 	entry_points=\
 	"""
-        [ckan.plugins]
+    [ckan.plugins]
 	# Add plugins here, eg
-	# myplugin=ckanext.sdrdltheme:PluginClass
+	hello=ckanext.sdrdltheme.hello:HelloWorldPlugin
+	sdrdltheme=ckanext.sdrdltheme.theme:ThemePlugin
 	""",
 )
