@@ -3,6 +3,7 @@
 # enabled templates can `{{ h.hello_world() }}` to add this html snippet.
 
 import ckan.plugins as p
+import ckan.plugins.toolkit as tk
 import logging 
 import os
 import ckanext.sdrdltheme
@@ -13,24 +14,8 @@ log.info("Getting started with theme")
 
 
 def after(instance, action, **params):
-    log.info("AFTER")
+    pass
 
-def configure_template_directory(config, relative_path):
-    configure_served_directory(config, relative_path, 'extra_template_paths')
-
-def configure_public_directory(config, relative_path):
-    configure_served_directory(config, relative_path, 'extra_public_paths')
-
-def configure_served_directory(config, relative_path, config_var):
-    'Configure serving of public/template directories.'
-    assert config_var in ('extra_template_paths', 'extra_public_paths')
-    this_dir = os.path.dirname(ckanext.sdrdltheme.__file__)
-    absolute_path = os.path.join(this_dir, relative_path)
-    if absolute_path not in config.get(config_var, ''):
-        if config.get(config_var):
-            config[config_var] = absolute_path + ',' + config[config_var]
-        else:
-            config[config_var] = absolute_path
 
 
 class ThemePlugin(p.SingletonPlugin):
@@ -40,17 +25,15 @@ class ThemePlugin(p.SingletonPlugin):
 
     def update_config(self, config):
         log.info("In update_config")
-        configure_template_directory(config, 'theme/templates')
-        configure_public_directory(config, 'theme/public')
-
+        tk.add_template_directory(config, 'theme/templates')
+        tk.add_public_directory(config, 'theme/public')
+        tk.add_resource('theme/public', 'ckanext-sdrdltheme')
 
     @staticmethod
     def hello_world():
         # This is our simple helper function.
         html = '<span>Hello World</span>'
         return p.toolkit.literal(html)
-
-
 
     def get_helpers(self):
         log.info("Returning helpers")

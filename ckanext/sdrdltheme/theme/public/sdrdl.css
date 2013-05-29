@@ -1,0 +1,8 @@
+.masthead, .site-footer{
+  background-color: #4F6D8D;
+  background-image: none;
+}
+
+.hero .module {
+    margin-bottom: 20px;
+}

@@ -27,6 +27,6 @@ setup(
     [ckan.plugins]
 	# Add plugins here, eg
 	hello=ckanext.sdrdltheme.hello:HelloWorldPlugin
-	sdrdltheme=ckanext.sdrdltheme.theme:ThemePlugin
+	sdrdltheme=ckanext.sdrdltheme.plugin:ThemePlugin
 	""",
 )
