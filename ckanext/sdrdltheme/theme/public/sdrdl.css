@@ -13,8 +13,7 @@
 
 .main.homepage .group-listing .box {
     margin-bottom: 10px;
-    height: 200px;
-    
+
 }
 
 .main.homepage .group-list .dataset-inline-title, .main.homepage .group-list .dataset-inline-title a{
@@ -30,3 +29,63 @@
 .main.homepage .group-list  ul {
     margin: 0;
 }
+
+.main.homepage .dataset-entry {
+    margin-bottom: 10px;
+    
+}
+
+.main.homepage .dataset-heading {
+    font-weight: bold;
+}
+
+.main.homepage .dataset-description {
+    font-size: 11px;
+}
+
+/* Stolen from Amazon.com */
+.psGradient {
+   z-index: 2;
+   position: relative;
+   height: 50px; 
+   margin-top: -50px;
+   overflow: hidden;
+   background: -moz-linear-gradient(
+     bottom, 
+     rgb(255, 255, 255) 15%,
+     rgba(255, 255, 255, 0) 100%
+   ); 
+   background: -webkit-gradient(
+     linear,
+     bottom,
+     top,
+     color-stop(15%, rgb(255, 255, 255)),
+     color-stop(100%, rgba(255, 255, 255, 0))
+   );
+   background: -webkit-linear-gradient(
+     bottom,
+     rgb(255,255,255) 15%,
+     rgba(255, 255, 255, 0) 100%
+   );
+   background: -o-linear-gradient(
+     bottom,
+     rgb(255,255,255) 15%,
+     rgba(255, 255, 255, 0) 100%
+   );
+   background: -ms-linear-gradient(
+     bottom,
+     rgb(255,255,255) 15%,
+     rgba(255, 255, 255, 0) 100%
+   );
+   filter: 
+     progid:DXImageTransform.Microsoft.gradient(
+     startColorstr='#03ffffff',
+     endColorstr='#ffffff', GradientType=0
+   );
+   background: linear-gradient(
+     bottom,
+     rgb(255, 255, 255) 15%,
+     rgba(255, 255, 255, 0) 100%
+   );
+}
+

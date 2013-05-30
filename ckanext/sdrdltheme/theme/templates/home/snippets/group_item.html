@@ -20,10 +20,14 @@
   </header>
   <div class="dataset-content">
 	{% if packages %}
-	  <ul class="dataset-list">
+	  <ul class="unstyled dataset-list">
 	    {% for package in packages %}
+			  {% set fs = h.font_size(package.tracking_summary.total) %}
 			  {% if group.name in h.dict_list_reduce(package.groups, 'name') and not package.private %}
-			  	<li class="dataset-inline-title" style='font-size: {{h.font_size(package.tracking_summary.total)}}%;'>{{ h.link_to(h.truncate( package.title or package.name, truncate_title or 80), h.url_for(controller='package', action='read', id=package.name)) }} </li>
+			  	<li class="dataset-entry">
+				<span class="dataset-heading" style="font-size: {{fs}}%;">{{ h.link_to(h.truncate( package.title or package.name, truncate_title or 80), h.url_for(controller='package', action='read', id=package.name)) }}.</span>
+				<span class="dataset-description">{{ h.markdown_extract(package.notes, extract_length=140)}}</span>
+				</li>
 			  {% endif %}
 	    {% endfor %}
 	  </ul>
