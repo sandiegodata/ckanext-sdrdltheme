@@ -1,3 +1,4 @@
+{# Templates have two important variables. c is the context, and h for helper functions. You can add functions to h with the get_helpers() method in the plugin.py file. #}
 {% extends "page.html" %}
 
 {% block subtitle %}{{ _("Welcome") }}{% endblock %}
@@ -46,17 +47,17 @@
 
 {% block primary_content %}
   <div class="row group-listing">
-    {% for group in c.group_package_stuff %}
+    {% for group in c.groups|sort(attribute='packages', reverse=True) %}
       <div class="span6">
         <div class="box">
-          {% snippet 'snippets/group_item.html', group=group.group_dict, offset = 0, truncate=100 %}
+		  {% if group.packages > 0 %}
+          {% snippet 'home/snippets/group_item.html', group=group, packages=c.datasets, truncate=100 %}
+    	  {% endif %}
         </div>
       </div>
     {% endfor %}
   </div>
 {% endblock %}
-
-
 
 {# Remove the toolbar. #}
 {% block toolbar %}{% endblock %}

@@ -1,8 +1,32 @@
-.masthead, .site-footer{
+.main.homepage .masthead, .main.homepage .site-footer{
   background-color: #4F6D8D;
   background-image: none;
 }
 
-.hero .module {
+.main.homepage .hero .module {
     margin-bottom: 20px;
+}
+
+.main.homepage .group-list .dataset-content {
+    min-height: 0px;
+}
+
+.main.homepage .group-listing .box {
+    margin-bottom: 10px;
+    height: 200px;
+    
+}
+
+.main.homepage .group-list .dataset-inline-title, .main.homepage .group-list .dataset-inline-title a{
+    color: black;
+    display: inline;
+    margin-right: .5em;
+}
+
+.main.homepage .group-list  .dataset-content {
+    padding: 10px;
+}
+
+.main.homepage .group-list  ul {
+    margin: 0;
 }

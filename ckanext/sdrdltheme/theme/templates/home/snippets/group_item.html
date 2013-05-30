@@ -1,0 +1,35 @@
+<section class="group-list module module-narrow module-shallow">
+  <header class="module-heading media">
+    {% set url=h.url_for(controller='group', action='read', id=group.name) %}
+    {% set truncate=truncate or 0 %}
+    <a class="media-image" href="{{ url }}">
+      <img src="{{ group.image_url or h.url_for_static('/base/images/placeholder-group.png') }}" width="85" alt="{{ group.name }}" />
+    </a>
+    <div class="media-content">
+      <h3 class="media-heading"><a href={{ url }}>{{ group.title or group.name }}</a></h3>
+      {% if group.description %}
+        {% if truncate == 0 %}
+          <p>{{ h.markdown_extract(group.description)|urlize }}</p>
+        {% else %}
+          <p>{{ h.markdown_extract(group.description, truncate)|urlize }}</p>
+        {% endif %}
+      {% else %}
+        <p class="empty">{{ _('There is no description for this group') }}</p>
+      {% endif %}
+    </div>
+  </header>
+  <div class="dataset-content">
+	{% if packages %}
+	  <ul class="dataset-list">
+	    {% for package in packages %}
+			  {% if group.name in h.dict_list_reduce(package.groups, 'name') and not package.private %}
+			  	<li class="dataset-inline-title" style='font-size: {{h.font_size(package.tracking_summary.total)}}%;'>{{ h.link_to(h.truncate( package.title or package.name, truncate_title or 80), h.url_for(controller='package', action='read', id=package.name)) }} </li>
+			  {% endif %}
+	    {% endfor %}
+	  </ul>
+	{% endif %}
+    </div>
+
+</section>
+
+

@@ -1,0 +1,17 @@
+{% set truncate = truncate or 180 %}
+{% set truncate_title =  %}
+{% set title = package.title or package.name %}
+{% set notes = h.markdown_extract(package.notes, extract_length=truncate) %}
+
+<li class="{{ item_class or "dataset-item" }}">
+  {% block package_item_content %}
+    <div class="dataset-content">
+      <h3 class="dataset-heading">
+        {{ h.popular('recent views', package.tracking_summary.recent, min=10) if package.tracking_summary }}
+      </h3>
+      {% if banner %}
+        <span class="banner">{{ _('Popular') }}</span>
+      {% endif %}
+    </div>
+  {% endblock %}
+</li>
