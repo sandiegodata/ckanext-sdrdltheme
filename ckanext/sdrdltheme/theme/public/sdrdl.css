@@ -3,7 +3,7 @@
   background-image: none;
 }
 
-.main.homepage .hero .module {
+.hero .module {
     margin-bottom: 20px;
 }
 
@@ -42,6 +42,21 @@
 .main.homepage .dataset-description {
     font-size: 11px;
 }
+
+[class*="span"] {
+    float: none;
+}
+
+.main.homepage .group-listing .left {
+    float: left;
+    clear: left;
+}
+
+.main.homepage .group-listing .right {
+    float: right;
+    
+}
+
 
 /* Stolen from Amazon.com */
 .psGradient {

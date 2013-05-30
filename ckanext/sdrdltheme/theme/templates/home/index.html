@@ -47,14 +47,12 @@
 
 {% block primary_content %}
   <div class="row group-listing">
-    {% for group in c.groups|sort(attribute='packages', reverse=True) %}
-      <div class="span6">
-        <div class="box">
-		  {% if group.packages > 0 %}
-          {% snippet 'home/snippets/group_item.html', group=group, packages=c.datasets, truncate=100 %}
-    	  {% endif %}
-        </div>
-      </div>
+    {% for group in c.groups|sort(attribute='packages', reverse=True) if group.packages > 0 %}
+		<div class='span6 {{loop.cycle('left','right')}}'>
+			<div class="box">
+			{% snippet 'home/snippets/group_item.html', group=group, packages=c.datasets, truncate=100 %}
+			</div>
+		</div>
     {% endfor %}
   </div>
 {% endblock %}
