@@ -25,7 +25,7 @@
 		<!-- {{group.name}} -->
 		
 	    {% for package in packages %}
-			  <!-- >{{h.dict_list_reduce(package.groups, 'name')}} -->
+			  <!-- >{{package.name}} -> {{h.dict_list_reduce(package.groups, 'name')}} -->
 			  {% set fs = h.font_size(package.tracking_summary.total) %}
 			  {% if group.name in h.dict_list_reduce(package.groups, 'name') and not package.private%}
 			  	<li class="dataset-entry">
