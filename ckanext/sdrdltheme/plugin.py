@@ -8,6 +8,17 @@ import os
 import ckanext.sdrdltheme
 import jinja2
 
+from pylons.i18n import _
+from pylons import g, c, config, cache
+import sqlalchemy.exc
+
+import ckan.logic as logic
+import ckan.lib.maintain as maintain
+import ckan.lib.search as search
+import ckan.lib.base as base
+import ckan.model as model
+import ckan.lib.helpers as h
+
 log = logging.getLogger(__name__)
 
 log.info("Getting started with theme")
@@ -19,6 +30,26 @@ class ThemePlugin(p.SingletonPlugin):
 
     p.implements(p.ITemplateHelpers)
     p.implements(p.IConfigurer)
+    p.implements(p.IRoutes, inherit=True)
+
+    def get_packages(self):
+        
+        context = {'model': model, 'session': model.Session,
+                   'user': c.user or c.author}
+                   
+        data_dict = {
+            'q': '*:*',
+            'facet.field': g.facets,
+            'rows': 4,
+            'start': 0,
+            'sort': 'views_recent desc',
+            'fq': 'capacity:"public"'
+        }
+        
+        query = logic.get_action('package_search')(context, data_dict)
+        c.search_facets = query['search_facets']
+        c.package_count = query['count']
+        c.datasets = query['results']
 
     def update_config(self, config):
         log.info("In update_config")
@@ -70,3 +101,15 @@ class ThemePlugin(p.SingletonPlugin):
             'log_context': self.log_context,
             'font_size' : self.font_size
         }
+        
+    def before_map(self, map):
+        log.info("before_map")
+        
+        map.connect('/',
+                    controller='ckanext.sdrdltheme.controllers.home:HomeController',
+                    action='index')
+        
+        
+        return map
+        
+        

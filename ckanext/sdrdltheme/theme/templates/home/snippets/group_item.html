@@ -23,15 +23,18 @@
 	{% if packages %}
 	  <ul class="unstyled dataset-list">
 		<!-- {{group.name}} -->
-		
+		{% set n = 0 %}
 	    {% for package in packages %}
 			  <!-- >{{package.name}} -> {{h.dict_list_reduce(package.groups, 'name')}} -->
 			  {% set fs = h.font_size(package.tracking_summary.total) %}
-			  {% if group.name in h.dict_list_reduce(package.groups, 'name') and not package.private%}
+			  {% if group.name in h.dict_list_reduce(package.groups, 'name') and not package.private %}
+				{% set n = n + 1 %}
+				{% if n < 5 %}
 			  	<li class="dataset-entry">
 				<span class="dataset-heading" style="font-size: {{fs}}%;">{{ h.link_to(h.truncate( package.title or package.name, truncate_title or 80), h.url_for(controller='package', action='read', id=package.name)) }}.</span>
 				<span class="dataset-description">{{ h.markdown_extract(package.notes, extract_length=140)}}</span>
 				</li>
+				{% endif %}
 			  {% endif %}
 	    {% endfor %}
 	  </ul>
