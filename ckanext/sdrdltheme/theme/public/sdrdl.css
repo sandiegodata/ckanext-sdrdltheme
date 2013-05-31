@@ -1,3 +1,13 @@
+/* For the groups page*/
+img.group-image {
+    max-height:124px;
+    max-width: 208px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
 .main.homepage .masthead, .main.homepage .site-footer{
   background-color: #4F6D8D;
   background-image: none;
@@ -9,6 +19,18 @@
 
 .main.homepage .group-list .dataset-content {
     min-height: 0px;
+}
+
+.main.homepage .group-list .media-image img {
+    max-height:50px;
+    max-width: 84px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.main.homepage .group-list .media-image  {
+    width: 84px;
 }
 
 .main.homepage .group-listing .box {
