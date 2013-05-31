@@ -10,6 +10,7 @@ import jinja2
 
 from pylons.i18n import _
 from pylons import g, c, config, cache
+from beaker.cache import cache_region
 import sqlalchemy.exc
 
 import ckan.logic as logic
@@ -32,30 +33,30 @@ class ThemePlugin(p.SingletonPlugin):
     p.implements(p.IConfigurer)
     p.implements(p.IRoutes, inherit=True)
 
-    def get_packages(self):
-        
-        context = {'model': model, 'session': model.Session,
-                   'user': c.user or c.author}
-                   
-        data_dict = {
-            'q': '*:*',
-            'facet.field': g.facets,
-            'rows': 4,
-            'start': 0,
-            'sort': 'views_recent desc',
-            'fq': 'capacity:"public"'
-        }
-        
-        query = logic.get_action('package_search')(context, data_dict)
-        c.search_facets = query['search_facets']
-        c.package_count = query['count']
-        c.datasets = query['results']
 
     def update_config(self, config):
         log.info("In update_config")
         tk.add_template_directory(config, 'theme/templates')
         tk.add_public_directory(config, 'theme/public')
         tk.add_resource('theme/public', 'ckanext-sdrdltheme')
+   
+    @cache_region('main', 'search_func')
+    def _wordpress_page(self, id):
+        from pywordpress import Wordpress
+        import time
+
+        url = str(config['ckan.site.wordpress.server'])
+        password = config['ckan.site.wordpress.password']
+        user = config['ckan.site.wordpress.user']
+
+        wp = Wordpress(url, user, password)
+
+        p = wp.get_page(id)
+
+        return p
+   
+    def wordpress_page(self, id):
+        return self._wordpress_page(id)
    
     @staticmethod
     def font_size(count):
@@ -99,7 +100,8 @@ class ThemePlugin(p.SingletonPlugin):
         return {
             'hello_world': self.hello_world,
             'log_context': self.log_context,
-            'font_size' : self.font_size
+            'font_size' : self.font_size,
+            'wordpress_page' : self.wordpress_page
         }
         
     def before_map(self, map):
@@ -108,6 +110,9 @@ class ThemePlugin(p.SingletonPlugin):
         map.connect('/',
                     controller='ckanext.sdrdltheme.controllers.home:HomeController',
                     action='index')
+        map.connect('/about',
+                    controller='ckanext.sdrdltheme.controllers.home:HomeController',
+                    action='about')
         
         
         return map

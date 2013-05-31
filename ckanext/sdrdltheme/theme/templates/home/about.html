@@ -10,12 +10,8 @@
   <article class="module">
     <div class="module-content">
       {% block about %}
-        {% if g.site_about %}
-          {{ h.render_markdown(g.site_about) }}
-        {% else %}
           <h1 class="page-heading">{{ _('About') }}</h1>
-          {% snippet 'home/snippets/about_text.html' %}
-        {% endif %}
+          {{ h.render_markdown(h.wordpress_page(534).description) }}
       {% endblock %}
     </div>
   </article>

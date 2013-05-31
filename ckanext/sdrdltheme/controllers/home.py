@@ -1,6 +1,8 @@
 from pylons.i18n import _
 from pylons import g, c, config, cache
+from beaker.cache import cache_region
 import sqlalchemy.exc
+import logging 
 
 import ckan.logic as logic
 import ckan.lib.maintain as maintain
@@ -8,6 +10,8 @@ import ckan.lib.search as search
 import ckan.lib.base as base
 import ckan.model as model
 import ckan.lib.helpers as h
+
+log = logging.getLogger(__name__)
 
 CACHE_PARAMETERS = ['__cache', '__no_cache__']
 
@@ -18,6 +22,9 @@ class HomeController(base.BaseController):
     repo = model.repo
 
     def __before__(self, action, **env):
+        
+        self.page_cache = {}
+        
         try:
             base.BaseController.__before__(self, action, **env)
             context = {'model': model, 'user': c.user or c.author}
@@ -110,6 +117,7 @@ class HomeController(base.BaseController):
         return base.render('home/license.html')
 
     def about(self):
+
         return base.render('home/about.html')
 
     def cache(self, id):
