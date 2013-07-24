@@ -20,6 +20,8 @@ import ckan.lib.base as base
 import ckan.model as model
 import ckan.lib.helpers as h
 
+from routes.mapper import SubMapper
+
 log = logging.getLogger(__name__)
 
 log.info("Getting started with theme")
@@ -93,6 +95,42 @@ class ThemePlugin(p.SingletonPlugin):
 
         return p.toolkit.literal(html)
 
+    @staticmethod
+    def dir(o, msg = ''):
+        import pprint
+        log.info("{}: {}".format(msg,pprint.pformat(dir(o)) ))
+
+    @staticmethod
+    def get_ofs():
+        """Return a configured instance of the appropriate OFS driver.
+        """
+        storage_backend = config['ofs.impl']
+        kw = {}
+        for k, v in config.items():
+            if not k.startswith('ofs.') or k == 'ofs.impl':
+                continue
+            kw[k[4:]] = v
+
+        # Make sure we have created the marker file to avoid pairtree issues
+        if storage_backend == 'pairtree' and 'storage_dir' in kw:
+            create_pairtree_marker(kw['storage_dir'])
+
+        ofs = get_impl(storage_backend)(**kw)
+        return ofs
+
+    def s3link(self, path):
+        from ofs import get_impl
+        
+        BUCKET = config.get('ckan.storage.bucket', 'default')
+        key_prefix = config.get('ckan.storage.key_prefix', 'file/')
+        
+        ofs = self.get_ofs()
+        
+        k = ofs._get_key(b, label)
+        
+        return k.generate_url(60,force_http=True)
+
+
     def get_helpers(self):
         log.info("Returning helpers")
         # This method is defined in the ITemplateHelpers interface and
@@ -101,7 +139,9 @@ class ThemePlugin(p.SingletonPlugin):
             'hello_world': self.hello_world,
             'log_context': self.log_context,
             'font_size' : self.font_size,
-            'wordpress_page' : self.wordpress_page
+            'wordpress_page' : self.wordpress_page, 
+            'dir' : self.dir,
+            's3link' : self.s3link
         }
         
     def before_map(self, map):
@@ -113,6 +153,42 @@ class ThemePlugin(p.SingletonPlugin):
         map.connect('/about',
                     controller='ckanext.sdrdltheme.controllers.home:HomeController',
                     action='about')
+        
+        # Helpers to reduce code clutter
+        GET = dict(method=['GET'])
+        PUT = dict(method=['PUT'])
+        POST = dict(method=['POST'])
+        DELETE = dict(method=['DELETE'])
+        GET_POST = dict(method=['GET', 'POST'])
+        PUT_POST = dict(method=['PUT','POST'])
+        PUT_POST_DELETE = dict(method=['PUT', 'POST', 'DELETE'])
+        OPTIONS = dict(method=['OPTIONS'])
+        
+        # Storage routes
+        with SubMapper(map, controller='ckanext.sdrdltheme.controllers.storage:StorageAPIController') as m:
+            m.connect('storage_api', '/api/storage', action='index')
+            m.connect('storage_api_set_metadata', '/api/storage/metadata/{label:.*}',
+                      action='set_metadata', conditions=PUT_POST)
+            m.connect('storage_api_get_metadata', '/api/storage/metadata/{label:.*}',
+                      action='get_metadata', conditions=GET)
+            m.connect('storage_api_auth_request',
+                      '/api/storage/auth/request/{label:.*}',
+                      action='auth_request')
+            m.connect('storage_api_auth_form',
+                      '/api/storage/auth/form/{label:.*}',
+                      action='auth_form')
+
+        with SubMapper(map, controller='ckanext.sdrdltheme.controllers.storage:StorageController') as m:
+            m.connect('storage_upload', '/storage/upload',
+                      action='upload')
+            m.connect('storage_upload_handle', '/storage/upload_handle',
+                      action='upload_handle')
+            m.connect('storage_upload_success', '/storage/upload/success',
+                      action='success')
+            m.connect('storage_upload_success_empty', '/storage/upload/success_empty',
+                      action='success_empty')
+            m.connect('storage_file', '/storage/f/{label:.*}',
+                      action='file')
         
         
         return map
